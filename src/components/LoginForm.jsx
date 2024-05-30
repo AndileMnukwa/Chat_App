@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "react";
 import axios from 'axios';
 
 const LoginForm = () => {
@@ -6,24 +6,21 @@ const LoginForm = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-const handleSubmit = async (e) => {
-    e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-const authObject = { 'Project-ID': "515dafbe-0670-4819-bcfd-2053e577bc2c", 'User-Name': username, 'User-Secret': password };    
-    
-try {
-    // username | password => chatengine -> give messages
-    await axios.get('https://api.chatengine.io/chats', { headers: authObject });
+        try {
+            const response = await axios.post('http://localhost:5000/login', { username, password });
 
-    localStorage.setItem('username', username)
-    localStorage.setItem('password', password)
-
-    window.location.reload();
-} catch (error) {
-    setError('Oops, incorrect credentials.')
-}
-
-}
+            if (response.status === 200) {
+                localStorage.setItem('username', username);
+                localStorage.setItem('password', password);
+                window.location.reload();
+            }
+        } catch (error) {
+            setError('Oops, incorrect credentials.');
+        }
+    }
 
     return (
         <div className="wrapper">
@@ -31,7 +28,7 @@ try {
                 <h1 className="title">Binary Brains 👋</h1>
                 <form onSubmit={handleSubmit}>
                     <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="input" placeholder="Username" required/>
-                    <input type="text" value={password} onChange={(e) => setPassword(e.target.value)} className="input" placeholder="Password" required/>
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="input" placeholder="Password" required/>
                     <div align="center">
                        <button type="submit" className="button">
                             <span>Start Chatting</span>
@@ -41,6 +38,7 @@ try {
                 </form>
             </div>
         </div>
-    )
+    );
 }
- export default LoginForm;
+
+export default LoginForm;
